@@ -1,18 +1,33 @@
+import { useDispatch, useSelector } from 'react-redux';
+import { nanoid } from 'nanoid';
 import Button from 'components/Button';
-import PropTypes from 'prop-types';
 import s from './ContactForm.module.css';
 
-const ContactForm = ({ addContacts }) => {
+import {
+  checkNameInPhonebook,
+  formatUserTel,
+} from 'components/utils/addContactsUtils';
+import { getAllContacts } from 'redux/contacts/contactsSelectors';
+import { addContacts } from 'redux/contacts/contactsSlice';
+
+const ContactForm = () => {
+  const contacts = useSelector(getAllContacts);
+  const dispatch = useDispatch();
+
   const onFormSabmit = e => {
     e.preventDefault();
-    const userName = e.currentTarget.name.value.toLowerCase();
-    const userTel = e.currentTarget.number.value;
-    addContacts(userName, userTel);
+    const name = e.currentTarget.name.value.toLowerCase();
+    const number = formatUserTel(e.currentTarget.number.value);
+
+    if (checkNameInPhonebook(name, contacts)) return;
+
+    dispatch(addContacts({ name, number, id: nanoid(5) }));
+
     e.currentTarget.reset();
   };
 
   return (
-    <form className={s.form} autoComplete="off" onSubmit={e => onFormSabmit(e)}>
+    <form className={s.form} autoComplete="off" onSubmit={onFormSabmit}>
       <label className={s.label} htmlFor="contactsName">
         Name
       </label>
@@ -43,10 +58,6 @@ const ContactForm = ({ addContacts }) => {
       <Button text="Add contact" type="submit" />
     </form>
   );
-};
-
-ContactForm.propTypes = {
-  addContacts: PropTypes.func.isRequired,
 };
 
 export default ContactForm;

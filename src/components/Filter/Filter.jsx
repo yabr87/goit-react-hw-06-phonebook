@@ -1,7 +1,17 @@
-import PropTypes from 'prop-types';
+import { useDispatch, useSelector } from 'react-redux';
+import { setFilter } from 'redux/filter/filterSlice';
+import { getFilter } from 'redux/filter/filterSelectors';
+
 import s from './Filter.module.css';
 
-const Filter = ({ filterValue, onFilterInputChange }) => {
+const Filter = () => {
+  const dispatch = useDispatch();
+  const filter = useSelector(getFilter);
+
+  const onFilterInputChange = ({ target }) => {
+    dispatch(setFilter(target.value));
+  };
+
   return (
     <div className={s.filterWrapper}>
       <label className={s.filterLabel} htmlFor="idFilter">
@@ -12,20 +22,11 @@ const Filter = ({ filterValue, onFilterInputChange }) => {
         id="idFilter"
         className={s.input}
         name="filter"
-        value={filterValue}
-        onChange={e => onFilterInputChange(e.target.value)}
+        value={filter}
+        onChange={onFilterInputChange}
       />
     </div>
   );
-};
-
-Filter.propTypes = {
-  filterValue: PropTypes.string.isRequired,
-  onFilterInputChange: PropTypes.func.isRequired,
-};
-
-Filter.defaultProps = {
-  filterValue: '',
 };
 
 export default Filter;

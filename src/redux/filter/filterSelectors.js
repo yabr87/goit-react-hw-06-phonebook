@@ -1,4 +1,7 @@
-export const fiteredContacts = (filter, contacts) => {
+// export const getFilter = ({ filter }) => filter;
+export const getFilter = state => state.filter;
+
+export const getfiteredContacts = (filter, contacts) => {
   const normalizeFilter = filter.toLowerCase().trim();
 
   const fiteredContacts = contacts.filter(contact =>
